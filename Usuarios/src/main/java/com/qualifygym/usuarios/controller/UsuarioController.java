@@ -97,13 +97,13 @@ public class UsuarioController {
             String email = (String) datos.get("email");
             String phone = (String) datos.get("phone");
             Long rolId = datos.get("rolId") != null ? Long.valueOf(datos.get("rolId").toString()) : null;
-            String photoUrl = datos.get("photoUrl") != null ? (String) datos.get("photoUrl") : null;
+            String address = datos.get("address") != null ? (String) datos.get("address") : null;
             
             if (username == null || password == null || email == null || phone == null || rolId == null) {
                 return ResponseEntity.badRequest().body("Faltan campos requeridos: username, password, email, phone, rolId");
             }
             
-            Usuario nuevo = usuarioService.crearUsuario(username, password, email, phone, rolId, photoUrl);
+            Usuario nuevo = usuarioService.crearUsuario(username, password, email, phone, rolId, address);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -124,9 +124,9 @@ public class UsuarioController {
             String email = (String) datos.get("email");
             String phone = (String) datos.get("phone");
             Long rolId = datos.get("rolId") != null ? Long.valueOf(datos.get("rolId").toString()) : null;
-            String photoUrl = datos.get("photoUrl") != null ? (String) datos.get("photoUrl") : null;
+            String address = datos.get("address") != null ? (String) datos.get("address") : null;
             
-            Usuario actualizado = usuarioService.actualizarUsuario(id, username, password, email, phone, rolId, photoUrl);
+            Usuario actualizado = usuarioService.actualizarUsuario(id, username, password, email, phone, rolId, address);
             return ResponseEntity.ok(actualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -197,6 +197,7 @@ public class UsuarioController {
             String password = datos.get("password");
             String email = datos.get("email");
             String phone = datos.get("phone");
+            String address = datos.get("address"); // Opcional
 
             // Validar que todos los campos requeridos estén presentes
             if (username == null || username.trim().isEmpty()) {
@@ -217,7 +218,8 @@ public class UsuarioController {
                 username.trim(), 
                 password, 
                 email.trim(), 
-                phone.trim()
+                phone.trim(),
+                address != null ? address.trim() : null
             );
             
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);

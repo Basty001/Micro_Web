@@ -52,8 +52,8 @@ public class Usuario {
     @Schema(description = "Rol asignado al usuario", example = "Administrador")
     private Rol rol;
 
-    @Column(name = "photo_url", length = 255, nullable = true)
-    @Schema(description = "ID de la imagen de perfil del microservicio de Imágenes", example = "123")
-    private String photoUrl;
+    @Column(length = 500, nullable = true)
+    @Schema(description = "Dirección del usuario (opcional)", example = "Calle Principal 123")
+    private String address;
 }
 

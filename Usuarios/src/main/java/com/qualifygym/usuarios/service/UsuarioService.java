@@ -39,7 +39,7 @@ public class UsuarioService {
         return crearUsuario(username, password, email, phone, roleId, null);
     }
 
-    public Usuario crearUsuario(String username, String password, String email, String phone, Long roleId, String photoUrl) {
+    public Usuario crearUsuario(String username, String password, String email, String phone, Long roleId, String address) {
         Rol rol = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado ID:" + roleId));
 
@@ -49,7 +49,7 @@ public class UsuarioService {
         nuevo.setEmail(email);
         nuevo.setPhone(phone);
         nuevo.setRol(rol);
-        nuevo.setPhotoUrl(photoUrl);
+        nuevo.setAddress(address);
         return usuarioRepository.save(nuevo);
     }
 
@@ -57,7 +57,7 @@ public class UsuarioService {
         return actualizarUsuario(id, username, password, email, phone, roleId, null);
     }
 
-    public Usuario actualizarUsuario(Long id, String username, String password, String email, String phone, Long roleId, String photoUrl) {
+    public Usuario actualizarUsuario(Long id, String username, String password, String email, String phone, Long roleId, String address) {
         Usuario existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado ID:" + id));
 
@@ -78,9 +78,9 @@ public class UsuarioService {
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado ID:" + roleId));
             existente.setRol(rol);
         }
-        // Actualizar photoUrl si se proporciona (puede ser null para eliminarlo)
-        if (photoUrl != null || (photoUrl == null && existente.getPhotoUrl() != null)) {
-            existente.setPhotoUrl(photoUrl);
+        // Actualizar address si se proporciona
+        if (address != null) {
+            existente.setAddress(address);
         }
         return usuarioRepository.save(existente);
     }
@@ -112,7 +112,7 @@ public class UsuarioService {
      * 
      * NOTA: El username puede repetirse (no es único). Solo el email y teléfono deben ser únicos.
      */
-    public Usuario registrarUsuarioPublico(String username, String password, String email, String phone) {
+    public Usuario registrarUsuarioPublico(String username, String password, String email, String phone, String address) {
         // Validar que el email no esté duplicado (el email debe ser único)
         if (usuarioRepository.existsByEmail(email)) {
             throw new RuntimeException("El email ya está registrado: " + email);
@@ -134,6 +134,7 @@ public class UsuarioService {
         nuevo.setPassword(passwordEncoder.encode(password));
         nuevo.setEmail(email);
         nuevo.setPhone(phone);
+        nuevo.setAddress(address); // Dirección opcional
         nuevo.setRol(rolUsuario);
         
         try {
