@@ -54,7 +54,7 @@ public class ProductoController {
             Producto producto = productoService.obtenerPorId(id);
             return ResponseEntity.ok(producto);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -88,13 +88,15 @@ public class ProductoController {
             Integer stock = Integer.valueOf(datos.get("stock").toString());
 
             if (nombre == null || descripcion == null || precio == null || categoria == null || stock == null) {
-                return ResponseEntity.badRequest().body("Faltan campos requeridos");
+                return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos"));
             }
 
             Producto producto = productoService.crearProducto(nombre, descripcion, precio, categoria, imagen, stock);
             return ResponseEntity.status(HttpStatus.CREATED).body(producto);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de número inválido: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -116,9 +118,9 @@ public class ProductoController {
             Producto producto = productoService.actualizarProducto(id, nombre, descripcion, precio, categoria, imagen, stock);
             return ResponseEntity.ok(producto);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -134,7 +136,7 @@ public class ProductoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al eliminar producto: " + e.getMessage());
+                    .body(Map.of("error", "Error al eliminar producto: " + e.getMessage()));
         }
     }
 
@@ -147,9 +149,9 @@ public class ProductoController {
             Producto producto = productoService.obtenerPorId(id);
             return ResponseEntity.ok(producto);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }

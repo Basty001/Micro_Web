@@ -53,7 +53,7 @@ public class PagoController {
             Pago pago = pagoService.obtenerPorId(id);
             return ResponseEntity.ok(pago);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -94,13 +94,15 @@ public class PagoController {
                     (String) datos.get("informacionAdicional") : null;
 
             if (ordenId == null || usuarioId == null || monto == null || metodoPago == null) {
-                return ResponseEntity.badRequest().body("Faltan campos requeridos");
+                return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos"));
             }
 
             Pago pago = pagoService.crearPago(ordenId, usuarioId, monto, metodoPago, informacionAdicional);
             return ResponseEntity.status(HttpStatus.CREATED).body(pago);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de número inválido: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -114,14 +116,14 @@ public class PagoController {
         try {
             String estado = (String) datos.get("estado");
             if (estado == null) {
-                return ResponseEntity.badRequest().body("El campo 'estado' es requerido");
+                return ResponseEntity.badRequest().body(Map.of("error", "El campo 'estado' es requerido"));
             }
             Pago pago = pagoService.actualizarEstado(id, estado);
             return ResponseEntity.ok(pago);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -137,7 +139,7 @@ public class PagoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al eliminar pago: " + e.getMessage());
+                    .body(Map.of("error", "Error al eliminar pago: " + e.getMessage()));
         }
     }
 }

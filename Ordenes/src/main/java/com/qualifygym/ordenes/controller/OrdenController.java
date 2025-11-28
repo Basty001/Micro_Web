@@ -54,7 +54,7 @@ public class OrdenController {
             Orden orden = ordenService.obtenerPorId(id);
             return ResponseEntity.ok(orden);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -96,13 +96,15 @@ public class OrdenController {
             List<Map<String, Object>> items = (List<Map<String, Object>>) datos.get("items");
 
             if (usuarioId == null || total == null || items == null || items.isEmpty()) {
-                return ResponseEntity.badRequest().body("Faltan campos requeridos");
+                return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos"));
             }
 
             Orden orden = ordenService.crearOrden(usuarioId, total, direccionEnvio, notas, items);
             return ResponseEntity.status(HttpStatus.CREATED).body(orden);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de número inválido: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -116,14 +118,14 @@ public class OrdenController {
         try {
             String estado = (String) datos.get("estado");
             if (estado == null) {
-                return ResponseEntity.badRequest().body("El campo 'estado' es requerido");
+                return ResponseEntity.badRequest().body(Map.of("error", "El campo 'estado' es requerido"));
             }
             Orden orden = ordenService.actualizarEstado(id, estado);
             return ResponseEntity.ok(orden);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -139,7 +141,7 @@ public class OrdenController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al eliminar orden: " + e.getMessage());
+                    .body(Map.of("error", "Error al eliminar orden: " + e.getMessage()));
         }
     }
 }

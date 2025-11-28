@@ -56,11 +56,11 @@ public class UsuarioController {
             if (usuario != null) {
                 return ResponseEntity.ok(usuario);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Usuario no encontrado"));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error interno: " + e.getMessage());
+                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -76,10 +76,10 @@ public class UsuarioController {
             Usuario usuario = usuarioService.obtenerUsuarioPorEmail(email.trim());
             return ResponseEntity.ok(usuario);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error interno: " + e.getMessage());
+                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -100,13 +100,13 @@ public class UsuarioController {
             String address = datos.get("address") != null ? (String) datos.get("address") : null;
             
             if (username == null || password == null || email == null || phone == null || rolId == null) {
-                return ResponseEntity.badRequest().body("Faltan campos requeridos: username, password, email, phone, rolId");
+                return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos: username, password, email, phone, rolId"));
             }
             
             Usuario nuevo = usuarioService.crearUsuario(username, password, email, phone, rolId, address);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -129,7 +129,7 @@ public class UsuarioController {
             Usuario actualizado = usuarioService.actualizarUsuario(id, username, password, email, phone, rolId, address);
             return ResponseEntity.ok(actualizado);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -146,7 +146,7 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al eliminar usuario: " + e.getMessage());
+                                 .body(Map.of("error", "Error al eliminar usuario: " + e.getMessage()));
         }
     }
 
@@ -172,15 +172,15 @@ public class UsuarioController {
 
             boolean valido = usuarioService.validarCredenciales(email.trim(), password);
             if (valido) {
-                return ResponseEntity.ok("Login exitoso");
+                return ResponseEntity.ok(Map.of("message", "Login exitoso"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Credenciales inválidas. Verifica tu email y contraseña.");
+                    .body(Map.of("error", "Credenciales inválidas. Verifica tu email y contraseña."));
             }
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error interno: " + e.getMessage());
+                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -224,10 +224,10 @@ public class UsuarioController {
             
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error interno: " + e.getMessage());
+                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 

@@ -57,8 +57,10 @@ public class CarritoController {
             
             ItemCarrito item = carritoService.agregarItem(usuarioId, productoId, cantidad, precioUnitario);
             return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de número inválido: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -74,9 +76,9 @@ public class CarritoController {
             ItemCarrito item = carritoService.actualizarCantidad(itemId, cantidad);
             return ResponseEntity.ok(item);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -92,7 +94,7 @@ public class CarritoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al eliminar item: " + e.getMessage());
+                    .body(Map.of("error", "Error al eliminar item: " + e.getMessage()));
         }
     }
 
@@ -107,7 +109,7 @@ public class CarritoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al vaciar carrito: " + e.getMessage());
+                    .body(Map.of("error", "Error al vaciar carrito: " + e.getMessage()));
         }
     }
 
@@ -122,7 +124,7 @@ public class CarritoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al eliminar item: " + e.getMessage());
+                    .body(Map.of("error", "Error al eliminar item: " + e.getMessage()));
         }
     }
 }
