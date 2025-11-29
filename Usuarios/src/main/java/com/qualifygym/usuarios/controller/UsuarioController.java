@@ -1,5 +1,6 @@
 package com.qualifygym.usuarios.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qualifygym.usuarios.model.Usuario;
 import com.qualifygym.usuarios.service.UsuarioService;
+import com.qualifygym.usuarios.service.JwtService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,6 +33,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios registrados en el sistema")
     @ApiResponses(value = {
@@ -172,7 +177,31 @@ public class UsuarioController {
 
             boolean valido = usuarioService.validarCredenciales(email.trim(), password);
             if (valido) {
-                return ResponseEntity.ok(Map.of("message", "Login exitoso"));
+                // Obtener el usuario para generar el token
+                Usuario usuario = usuarioService.obtenerUsuarioPorEmail(email.trim());
+                if (usuario != null) {
+                    // Generar token JWT
+                    String token = jwtService.generateToken(
+                        usuario.getUsername(),
+                        usuario.getId(),
+                        usuario.getRol().getNombre()
+                    );
+                    
+                    // Retornar token y datos del usuario
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("token", token);
+                    response.put("message", "Login exitoso");
+                    response.put("usuario", Map.of(
+                        "id", usuario.getId(),
+                        "username", usuario.getUsername(),
+                        "email", usuario.getEmail(),
+                        "rol", usuario.getRol().getNombre()
+                    ));
+                    return ResponseEntity.ok(response);
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error", "Error al obtener datos del usuario"));
+                }
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Credenciales inválidas. Verifica tu email y contraseña."));

@@ -14,12 +14,13 @@ import com.qualifygym.usuarios.repository.UsuarioRepository;
 public class LoadDatabase {
 
     @Bean
-    CommandLineRunner initDatabase(RoleRepository roleRepo, UsuarioRepository usuarioRepo, PasswordEncoder encoder) {
+    CommandLineRunner initDatabase(RoleRepository roleRepo, UsuarioRepository usuarioRepo, 
+                                   PasswordEncoder encoder) {
         return args -> {
             // Verificar y crear roles si no existen
             Rol admin = null;
             Rol usuario = null;
-            Rol moderador = null;
+            Rol entrenador = null;
             
             if (roleRepo.count() == 0) {
                 admin = new Rol();
@@ -30,19 +31,19 @@ public class LoadDatabase {
                 usuario.setNombre("Usuario");
                 roleRepo.save(usuario);
 
-                moderador = new Rol();
-                moderador.setNombre("Moderador");
-                roleRepo.save(moderador);
+                entrenador = new Rol();
+                entrenador.setNombre("Entrenador");
+                roleRepo.save(entrenador);
             } else {
-                // Verificar si existe el rol Moderador
-                boolean existeModerador = roleRepo.findAll().stream()
-                    .anyMatch(rol -> "Moderador".equals(rol.getNombre()));
+                // Verificar si existe el rol Entrenador
+                boolean existeEntrenador = roleRepo.findAll().stream()
+                    .anyMatch(rol -> "Entrenador".equals(rol.getNombre()));
                 
-                if (!existeModerador) {
-                    moderador = new Rol();
-                    moderador.setNombre("Moderador");
-                    roleRepo.save(moderador);
-                    System.out.println("Rol 'Moderador' agregado");
+                if (!existeEntrenador) {
+                    entrenador = new Rol();
+                    entrenador.setNombre("Entrenador");
+                    roleRepo.save(entrenador);
+                    System.out.println("Rol 'Entrenador' agregado");
                 }
                 
                 // Obtener roles existentes para crear usuarios
@@ -56,14 +57,14 @@ public class LoadDatabase {
                     .findFirst()
                     .orElse(null);
                     
-                moderador = roleRepo.findAll().stream()
-                    .filter(rol -> "Moderador".equals(rol.getNombre()))
+                entrenador = roleRepo.findAll().stream()
+                    .filter(rol -> "Entrenador".equals(rol.getNombre()))
                     .findFirst()
                     .orElse(null);
             }
 
             // Crear usuarios iniciales solo si no existen
-            if (usuarioRepo.count() == 0 && admin != null && usuario != null && moderador != null) {
+            if (usuarioRepo.count() == 0 && admin != null && usuario != null && entrenador != null) {
                 Usuario adminUser = new Usuario();
                 adminUser.setUsername("admin");
                 adminUser.setPassword(encoder.encode("admin123"));
@@ -80,29 +81,29 @@ public class LoadDatabase {
                 normalUser.setRol(usuario);
                 usuarioRepo.save(normalUser);
 
-                Usuario moderadorUser = new Usuario();
-                moderadorUser.setUsername("moderador");
-                moderadorUser.setPassword(encoder.encode("moderador123."));
-                moderadorUser.setEmail("moderador@qualifygym.com");
-                moderadorUser.setPhone("555555555");
-                moderadorUser.setRol(moderador);
-                usuarioRepo.save(moderadorUser);
+                Usuario entrenadorUser = new Usuario();
+                entrenadorUser.setUsername("entrenador");
+                entrenadorUser.setPassword(encoder.encode("entrenador123"));
+                entrenadorUser.setEmail("entrenador@qualifygym.com");
+                entrenadorUser.setPhone("555555555");
+                entrenadorUser.setRol(entrenador);
+                usuarioRepo.save(entrenadorUser);
 
                 System.out.println("Usuarios creados con contraseña encriptada");
             } else if (usuarioRepo.count() > 0) {
-                // Verificar si existe el usuario moderador de prueba
-                boolean existeModeradorUser = usuarioRepo.findAll().stream()
-                    .anyMatch(u -> "moderador@qualifygym.com".equals(u.getEmail()));
+                // Verificar si existe el usuario entrenador de prueba
+                boolean existeEntrenadorUser = usuarioRepo.findAll().stream()
+                    .anyMatch(u -> "entrenador@qualifygym.com".equals(u.getEmail()));
                 
-                if (!existeModeradorUser && moderador != null) {
-                    Usuario moderadorUser = new Usuario();
-                    moderadorUser.setUsername("moderador");
-                    moderadorUser.setPassword(encoder.encode("moderador123"));
-                    moderadorUser.setEmail("moderador@qualifygym.com");
-                    moderadorUser.setPhone("555555555");
-                    moderadorUser.setRol(moderador);
-                    usuarioRepo.save(moderadorUser);
-                    System.out.println("Usuario moderador de prueba creado");
+                if (!existeEntrenadorUser && entrenador != null) {
+                    Usuario entrenadorUser = new Usuario();
+                    entrenadorUser.setUsername("entrenador");
+                    entrenadorUser.setPassword(encoder.encode("entrenador123"));
+                    entrenadorUser.setEmail("entrenador@qualifygym.com");
+                    entrenadorUser.setPhone("555555555");
+                    entrenadorUser.setRol(entrenador);
+                    usuarioRepo.save(entrenadorUser);
+                    System.out.println("Usuario entrenador de prueba creado");
                 } else {
                     System.out.println("ℹ Datos ya existen. No se cargaron nuevos datos.");
                 }
@@ -110,4 +111,3 @@ public class LoadDatabase {
         };
     }
 }
-

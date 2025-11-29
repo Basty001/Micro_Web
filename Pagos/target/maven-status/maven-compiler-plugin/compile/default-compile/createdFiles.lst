@@ -1,0 +1,7 @@
+com\qualifygym\pagos\config\SeguridadConfig.class
+com\qualifygym\pagos\model\Pago.class
+com\qualifygym\pagos\repository\PagoRepository.class
+com\qualifygym\pagos\service\PagoService.class
+com\qualifygym\pagos\controller\PagoController.class
+com\qualifygym\pagos\PagosApplication.class
+com\qualifygym\pagos\config\OpenAPIConfig.class

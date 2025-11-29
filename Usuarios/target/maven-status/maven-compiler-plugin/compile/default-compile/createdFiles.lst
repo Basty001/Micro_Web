@@ -1,0 +1,12 @@
+com\qualifygym\usuarios\config\CustomUserDetailsService.class
+com\qualifygym\usuarios\repository\RoleRepository.class
+com\qualifygym\usuarios\config\OpenAPIConfig.class
+com\qualifygym\usuarios\service\JwtService.class
+com\qualifygym\usuarios\config\SeguridadConfig.class
+com\qualifygym\usuarios\controller\UsuarioController.class
+com\qualifygym\usuarios\model\Usuario.class
+com\qualifygym\usuarios\UsuariosApplication.class
+com\qualifygym\usuarios\model\Rol.class
+com\qualifygym\usuarios\config\LoadDatabase.class
+com\qualifygym\usuarios\repository\UsuarioRepository.class
+com\qualifygym\usuarios\service\UsuarioService.class

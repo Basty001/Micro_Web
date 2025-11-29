@@ -1,0 +1,7 @@
+com\qualifygym\productos\repository\ProductoRepository.class
+com\qualifygym\productos\controller\ProductoController.class
+com\qualifygym\productos\config\OpenAPIConfig.class
+com\qualifygym\productos\config\SeguridadConfig.class
+com\qualifygym\productos\model\Producto.class
+com\qualifygym\productos\ProductosApplication.class
+com\qualifygym\productos\service\ProductoService.class

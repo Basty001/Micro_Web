@@ -1,0 +1,9 @@
+com\qualifygym\ordenes\model\Orden.class
+com\qualifygym\ordenes\model\ItemOrden.class
+com\qualifygym\ordenes\controller\OrdenController.class
+com\qualifygym\ordenes\repository\ItemOrdenRepository.class
+com\qualifygym\ordenes\repository\OrdenRepository.class
+com\qualifygym\ordenes\OrdenesApplication.class
+com\qualifygym\ordenes\config\SeguridadConfig.class
+com\qualifygym\ordenes\service\OrdenService.class
+com\qualifygym\ordenes\config\OpenAPIConfig.class

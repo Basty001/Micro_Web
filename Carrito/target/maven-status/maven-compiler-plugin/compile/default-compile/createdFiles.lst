@@ -1,0 +1,7 @@
+com\qualifygym\carrito\config\SeguridadConfig.class
+com\qualifygym\carrito\model\ItemCarrito.class
+com\qualifygym\carrito\repository\ItemCarritoRepository.class
+com\qualifygym\carrito\controller\CarritoController.class
+com\qualifygym\carrito\config\OpenAPIConfig.class
+com\qualifygym\carrito\service\CarritoService.class
+com\qualifygym\carrito\CarritoApplication.class
