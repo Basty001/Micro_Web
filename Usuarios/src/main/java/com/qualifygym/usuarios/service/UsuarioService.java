@@ -110,17 +110,12 @@ public class UsuarioService {
      * Registro público de usuarios. Crea un nuevo usuario con el rol "Usuario" por defecto.
      * Este método es para registro público, a diferencia de crearUsuario que requiere rol Administrador.
      * 
-     * NOTA: El username puede repetirse (no es único). Solo el email y teléfono deben ser únicos.
+     * NOTA: El username y teléfono pueden repetirse (no son únicos). Solo el email debe ser único.
      */
     public Usuario registrarUsuarioPublico(String username, String password, String email, String phone, String address) {
         // Validar que el email no esté duplicado (el email debe ser único)
         if (usuarioRepository.existsByEmail(email)) {
             throw new RuntimeException("El email ya está registrado: " + email);
-        }
-
-        // Validar que el teléfono no esté duplicado (el teléfono debe ser único)
-        if (usuarioRepository.existsByPhone(phone)) {
-            throw new RuntimeException("El teléfono ya está registrado: " + phone);
         }
 
         // Buscar el rol "Usuario" por defecto
@@ -154,12 +149,9 @@ public class UsuarioService {
                 );
             }
             
-            // Si el error es por email o phone (que SÍ deben ser únicos), mostrar mensaje específico
+            // Si el error es por email (que SÍ debe ser único), mostrar mensaje específico
             if (errorMsg.contains("email")) {
                 throw new RuntimeException("El email ya está registrado: " + email);
-            }
-            if (errorMsg.contains("phone") || errorMsg.contains("tel")) {
-                throw new RuntimeException("El teléfono ya está registrado: " + phone);
             }
             
             // Otro error de integridad
