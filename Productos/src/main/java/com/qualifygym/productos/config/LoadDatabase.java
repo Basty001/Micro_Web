@@ -45,7 +45,34 @@ public class LoadDatabase {
                 cinturon.setStock(15);
                 productoRepo.save(cinturon);
 
-                System.out.println("✅ 3 productos precargados creados en la base de datos");
+                Producto pesas = new Producto();
+                pesas.setNombre("Set de pesas");
+                pesas.setDescripcion("Set de pesas ajustables para entrenamiento de fuerza en casa.");
+                pesas.setPrecio(60000.00);
+                pesas.setCategoria("accessory");
+                pesas.setImagen("https://cdnx.jumpseller.com/kidscool1/image/20546161/resize/540/540?1743190250");
+                pesas.setStock(10);
+                productoRepo.save(pesas);
+
+                Producto banda = new Producto();
+                banda.setNombre("Banda de resistencia");
+                banda.setDescripcion("Banda de resistencia para ejercicios de tonificación y rehabilitación.");
+                banda.setPrecio(15000.00);
+                banda.setCategoria("accessory");
+                banda.setImagen("https://www.wildtravel.cl/cdn/shop/files/1_fa7255a0-a41e-4c83-bacb-3fed9da720c8_1024x1024@2x.jpg?v=1706278606");
+                banda.setStock(20);
+                productoRepo.save(banda);
+
+                Producto multivitaminico = new Producto();
+                multivitaminico.setNombre("Multivitamínico diario");
+                multivitaminico.setDescripcion("Fórmula completa de multivitamínicos para apoyar la salud general y el bienestar diario.");
+                multivitaminico.setPrecio(20000.00);
+                multivitaminico.setCategoria("supplement");
+                multivitaminico.setImagen("https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67942/y/8.jpg");
+                multivitaminico.setStock(25);
+                productoRepo.save(multivitaminico);
+
+                System.out.println("Productos precargados creados en la base de datos");
             } else {
                 System.out.println("ℹ Productos ya existen. No se cargaron nuevos datos.");
             }
