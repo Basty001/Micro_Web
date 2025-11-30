@@ -19,7 +19,7 @@ public class LoadDatabase {
                 Producto proteina = new Producto();
                 proteina.setNombre("Proteína Whey");
                 proteina.setDescripcion("Proteína de suero de leche de alta calidad para recuperación muscular. Ideal para después del entrenamiento.");
-                proteina.setPrecio(49.990);
+                proteina.setPrecio(50000.00);
                 proteina.setCategoria("supplement");
                 proteina.setImagen("https://www.onelastrep.cl/cdn/shop/files/ProSupps-Premium-Whey-Proteina-5-Lb-Chocolate-1_1200x.jpg?v=1750893465");
                 proteina.setStock(15);
@@ -29,7 +29,7 @@ public class LoadDatabase {
                 Producto creatina = new Producto();
                 creatina.setNombre("Creatina Monohidratada");
                 creatina.setDescripcion("Creatina pura para aumentar fuerza y masa muscular. Aumenta el rendimiento en ejercicios de alta intensidad.");
-                creatina.setPrecio(24.990);
+                creatina.setPrecio(24000.00);
                 creatina.setCategoria("supplement");
                 creatina.setImagen("https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nrx/nrx00074/y/39.jpg");
                 creatina.setStock(7);
@@ -39,7 +39,7 @@ public class LoadDatabase {
                 Producto cinturon = new Producto();
                 cinturon.setNombre("Cinturón de Pesas");
                 cinturon.setDescripcion("Cinturón de cuero resistente para levantamiento de pesas. Proporciona soporte lumbar durante ejercicios pesados.");
-                cinturon.setPrecio(29.990);
+                cinturon.setPrecio(30000.00);
                 cinturon.setCategoria("accessory");
                 cinturon.setImagen("https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1687883940-81q40EfBhGL.jpg?crop=1xw:1.00xh;center,top&resize=980:*");
                 cinturon.setStock(15);
