@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import com.qualifygym.usuarios.model.Rol;
 import com.qualifygym.usuarios.model.Usuario;
 import com.qualifygym.usuarios.service.UsuarioService;
+import com.qualifygym.usuarios.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ class UsuarioControllerTest {
 
     @MockBean
     private UsuarioService usuarioService;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -140,7 +144,7 @@ class UsuarioControllerTest {
         mockMvc.perform(get("/api/v1/usuario/users/{id}", id)
                .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isNotFound())
-               .andExpect(content().string("Usuario no encontrado"));
+               .andExpect(jsonPath("$.error").value("Usuario no encontrado"));
         
         verify(usuarioService, times(1)).obtenerUsuarioPorId(id);
     }
@@ -169,7 +173,7 @@ class UsuarioControllerTest {
         nuevoUsuario.setPhone("987654321");
         nuevoUsuario.setRol(rolAdmin);
         
-        when(usuarioService.crearUsuario("nuevoUsuario", "password123", "nuevo@test.com", "987654321", 1L, null))
+        when(usuarioService.crearUsuario(eq("nuevoUsuario"), eq("password123"), eq("nuevo@test.com"), eq("987654321"), eq(1L), isNull()))
             .thenReturn(nuevoUsuario);
         
         // Act & Assert
@@ -181,7 +185,7 @@ class UsuarioControllerTest {
                .andExpect(jsonPath("$.username").value("nuevoUsuario"))
                .andExpect(jsonPath("$.email").value("nuevo@test.com"));
         
-        verify(usuarioService, times(1)).crearUsuario("nuevoUsuario", "password123", "nuevo@test.com", "987654321", 1L, null);
+        verify(usuarioService, times(1)).crearUsuario(eq("nuevoUsuario"), eq("password123"), eq("nuevo@test.com"), eq("987654321"), eq(1L), isNull());
     }
 
     /**
@@ -203,9 +207,9 @@ class UsuarioControllerTest {
                .contentType(MediaType.APPLICATION_JSON)
                .content(requestBody))
                .andExpect(status().isBadRequest())
-               .andExpect(content().string(org.hamcrest.Matchers.containsString("Faltan campos requeridos")));
+               .andExpect(jsonPath("$.error").value(org.hamcrest.Matchers.containsString("Faltan campos requeridos")));
         
-        verify(usuarioService, never()).crearUsuario(anyString(), anyString(), anyString(), anyString(), anyLong(), anyString());
+        verify(usuarioService, never()).crearUsuario(anyString(), anyString(), anyString(), anyString(), anyLong(), any());
     }
 
     /**
@@ -225,7 +229,7 @@ class UsuarioControllerTest {
             }
             """;
         
-        when(usuarioService.crearUsuario(anyString(), anyString(), anyString(), anyString(), anyLong(), anyString()))
+        when(usuarioService.crearUsuario(anyString(), anyString(), anyString(), anyString(), anyLong(), any()))
             .thenThrow(new RuntimeException("El username ya está registrado: usuarioExistente"));
         
         // Act & Assert
@@ -233,7 +237,7 @@ class UsuarioControllerTest {
                .contentType(MediaType.APPLICATION_JSON)
                .content(requestBody))
                .andExpect(status().isBadRequest())
-               .andExpect(content().string(org.hamcrest.Matchers.containsString("El username ya está registrado")));
+               .andExpect(jsonPath("$.error").value(org.hamcrest.Matchers.containsString("El username ya está registrado")));
     }
 
     /**
@@ -296,7 +300,7 @@ class UsuarioControllerTest {
                .contentType(MediaType.APPLICATION_JSON)
                .content(requestBody))
                .andExpect(status().isBadRequest())
-               .andExpect(content().string(org.hamcrest.Matchers.containsString("Usuario no encontrado")));
+               .andExpect(jsonPath("$.error").value(org.hamcrest.Matchers.containsString("Usuario no encontrado")));
     }
 
     /**
@@ -331,16 +335,28 @@ class UsuarioControllerTest {
             }
             """;
         
+        Usuario usuarioLogin = new Usuario();
+        usuarioLogin.setId(1L);
+        usuarioLogin.setUsername("testuser");
+        usuarioLogin.setEmail("test@test.com");
+        usuarioLogin.setRol(rolAdmin);
+        
         when(usuarioService.validarCredenciales("test@test.com", "password123")).thenReturn(true);
+        when(usuarioService.obtenerUsuarioPorEmail("test@test.com")).thenReturn(usuarioLogin);
+        when(jwtService.generateToken(anyString(), anyLong(), anyString())).thenReturn("test-token");
         
         // Act & Assert
         mockMvc.perform(post("/api/v1/usuario/login")
                .contentType(MediaType.APPLICATION_JSON)
                .content(requestBody))
                .andExpect(status().isOk())
-               .andExpect(content().string("Login exitoso"));
+               .andExpect(jsonPath("$.message").value("Login exitoso"))
+               .andExpect(jsonPath("$.token").exists())
+               .andExpect(jsonPath("$.usuario").exists());
         
         verify(usuarioService, times(1)).validarCredenciales("test@test.com", "password123");
+        verify(usuarioService, times(1)).obtenerUsuarioPorEmail("test@test.com");
+        verify(jwtService, times(1)).generateToken(anyString(), anyLong(), anyString());
     }
 
     /**
@@ -364,7 +380,7 @@ class UsuarioControllerTest {
                .contentType(MediaType.APPLICATION_JSON)
                .content(requestBody))
                .andExpect(status().isUnauthorized())
-               .andExpect(content().string("Credenciales inválidas"));
+               .andExpect(jsonPath("$.error").value("Credenciales inválidas. Verifica tu email y contraseña."));
         
         verify(usuarioService, times(1)).validarCredenciales("test@test.com", "passwordIncorrecto");
     }

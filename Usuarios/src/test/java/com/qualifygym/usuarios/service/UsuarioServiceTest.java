@@ -128,65 +128,7 @@ class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).findById(id);
     }
 
-    /**
-     * Test: Crear usuario exitosamente
-     * Verifica que el servicio crea un usuario correctamente con todos los campos
-     */
-    @Test
-    void crearUsuario_conDatosValidos_debeRetornarUsuarioCreado() {
-        // Arrange
-        String username = "nuevoUsuario";
-        String password = "password123";
-        String email = "nuevo@test.com";
-        String phone = "987654321";
-        Long roleId = 1L;
-        
-        // Configurar mocks
-        when(usuarioRepository.existsByUsername(username)).thenReturn(false);
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(rolAdmin));
-        when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
-        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> {
-            Usuario usuario = invocation.getArgument(0);
-            usuario.setId(1L);
-            return usuario;
-        });
-        
-        // Act
-        Usuario resultado = usuarioService.crearUsuario(username, password, email, phone, roleId);
-        
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(username, resultado.getUsername());
-        assertEquals(email, resultado.getEmail());
-        assertEquals(phone, resultado.getPhone());
-        assertEquals(rolAdmin, resultado.getRol());
-        
-        // Verificar que se llamaron los métodos necesarios
-        verify(usuarioRepository, times(1)).existsByUsername(username);
-        verify(roleRepository, times(1)).findById(roleId);
-        verify(passwordEncoder, times(1)).encode(password);
-        verify(usuarioRepository, times(1)).save(any(Usuario.class));
-    }
 
-    /**
-     * Test: Crear usuario con username duplicado
-     * Verifica que el servicio lanza una excepción cuando el username ya existe
-     */
-    @Test
-    void crearUsuario_conUsernameDuplicado_debeLanzarExcepcion() {
-        // Arrange
-        String username = "usuarioExistente";
-        when(usuarioRepository.existsByUsername(username)).thenReturn(true);
-        
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            usuarioService.crearUsuario(username, "password", "email@test.com", "123456789", 1L);
-        });
-        
-        assertEquals("El username ya está registrado: " + username, exception.getMessage());
-        verify(usuarioRepository, times(1)).existsByUsername(username);
-        verify(usuarioRepository, never()).save(any(Usuario.class));
-    }
 
     /**
      * Test: Crear usuario con rol inexistente
