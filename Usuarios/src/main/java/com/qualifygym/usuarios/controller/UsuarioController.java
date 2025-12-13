@@ -22,6 +22,8 @@ import com.qualifygym.usuarios.service.JwtService;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +41,7 @@ public class UsuarioController {
 
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios registrados en el sistema")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "204", description = "No hay usuarios registrados")
     })
     @GetMapping("/users")
@@ -50,7 +52,7 @@ public class UsuarioController {
 
     @Operation(summary = "Obtener usuario por ID", description = "Retorna la información de un usuario específico por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
@@ -71,7 +73,7 @@ public class UsuarioController {
 
     @Operation(summary = "Obtener usuario por email", description = "Retorna la información de un usuario específico por su email")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
@@ -90,7 +92,7 @@ public class UsuarioController {
 
     @Operation(summary = "Crear nuevo usuario", description = "Crea un nuevo usuario en el sistema. Requiere autenticación con rol Administrador")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o faltantes"),
             @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador")
     })
@@ -117,7 +119,7 @@ public class UsuarioController {
 
     @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario existente. Requiere autenticación con rol Administrador")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario no encontrado"),
             @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador")
     })
@@ -215,7 +217,7 @@ public class UsuarioController {
 
     @Operation(summary = "Registro público de usuario", description = "Permite a cualquier usuario registrarse en el sistema. Asigna automáticamente el rol 'Usuario'. Este endpoint es público y no requiere autenticación.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Datos inválidos, faltantes o duplicados (username/email ya existe)"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
@@ -262,7 +264,7 @@ public class UsuarioController {
 
     @Operation(summary = "Verificar si un usuario existe", description = "Retorna true si el usuario existe, false en caso contrario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Verificación exitosa"),
+            @ApiResponse(responseCode = "200", description = "Verificación exitosa", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/users/{id}/existe")
