@@ -53,7 +53,7 @@ public class Usuario {
     private Rol rol;
 
     @Column(length = 500, nullable = true)
-    @Schema(description = "Dirección del usuario (opcional)", example = "Calle Principal 123")
+    @Schema(description = "Dirección del usuario", example = "Calle Principal 123")
     private String address;
 }
 
