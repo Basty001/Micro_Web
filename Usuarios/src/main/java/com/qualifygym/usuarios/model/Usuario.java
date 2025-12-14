@@ -30,11 +30,11 @@ public class Usuario {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    @Schema(description = "Nombre de usuario", example = "Victor Isidro")
+    @Schema(description = "Nombre de usuario", example = "Nicolas Vladimir")
     private String username;
 
     @Column(nullable = false, length = 100)
-    @Schema(description = "Email del usuario", example = "Victor@duocuc.cl")
+    @Schema(description = "Email del usuario", example = "Nicolas@duocuc.cl")
     private String email;
 
     @Column(nullable = false, length = 20)
