@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
-@Tag(name = "Usuarios", description = "API para la gestión de usuarios del sistema QualifyGym")
+@Tag(name = "Usuarios", description = "API para la gestión de usuarios del sistema GymFit web")
 public class UsuarioController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class UsuarioController {
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios registrados en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "204", description = "No hay usuarios registrados")
+            @ApiResponse(responseCode = "204", description = "No hay usuarios registrados", content = @Content)
     })
     @GetMapping("/users")
     public ResponseEntity<List<Usuario>> getUsuarios() {
@@ -53,8 +53,8 @@ public class UsuarioController {
     @Operation(summary = "Obtener usuario por ID", description = "Retorna la información de un usuario específico por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
@@ -74,8 +74,8 @@ public class UsuarioController {
     @Operation(summary = "Obtener usuario por email", description = "Retorna la información de un usuario específico por su email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @GetMapping("/users/email/{email}")
     public ResponseEntity<?> getUsuarioByEmail(@PathVariable String email) {
@@ -93,8 +93,8 @@ public class UsuarioController {
     @Operation(summary = "Crear nuevo usuario", description = "Crea un nuevo usuario en el sistema. Requiere autenticación con rol Administrador")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o faltantes"),
-            @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador")
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o faltantes", content = @Content),
+            @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador", content = @Content)
     })
     @PostMapping("/users")
     public ResponseEntity<?> crearUsuario(@RequestBody Map<String, Object> datos) {
@@ -120,8 +120,8 @@ public class UsuarioController {
     @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario existente. Requiere autenticación con rol Administrador")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario no encontrado"),
-            @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador")
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador", content = @Content)
     })
     @PutMapping("/users/{id}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
@@ -159,10 +159,10 @@ public class UsuarioController {
 
     @Operation(summary = "Iniciar sesión", description = "Valida las credenciales de un usuario usando su email y contraseña para permitir el acceso al sistema")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login exitoso"),
-            @ApiResponse(responseCode = "400", description = "Faltan campos 'email' o 'password'"),
-            @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Login exitoso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = "400", description = "Faltan campos 'email' o 'password'", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> datos) {
@@ -218,8 +218,8 @@ public class UsuarioController {
     @Operation(summary = "Registro público de usuario", description = "Permite a cualquier usuario registrarse en el sistema. Asigna automáticamente el rol 'Usuario'. Este endpoint es público y no requiere autenticación.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos, faltantes o duplicados (username/email ya existe)"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "400", description = "Datos inválidos, faltantes o duplicados (username/email ya existe)", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> datos) {
@@ -265,7 +265,7 @@ public class UsuarioController {
     @Operation(summary = "Verificar si un usuario existe", description = "Retorna true si el usuario existe, false en caso contrario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Verificación exitosa", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @GetMapping("/users/{id}/existe")
     public ResponseEntity<Boolean> existeUsuario(@PathVariable Long id) {
