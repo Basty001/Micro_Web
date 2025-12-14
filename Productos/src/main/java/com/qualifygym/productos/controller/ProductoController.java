@@ -20,6 +20,8 @@ import com.qualifygym.productos.model.Producto;
 import com.qualifygym.productos.service.ProductoService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,8 +36,8 @@ public class ProductoController {
 
     @Operation(summary = "Obtener todos los productos", description = "Retorna una lista de todos los productos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente"),
-            @ApiResponse(responseCode = "204", description = "No hay productos")
+            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "204", description = "No hay productos", content = @Content)
     })
     @GetMapping
     public ResponseEntity<List<Producto>> getProductos() {
@@ -45,8 +47,8 @@ public class ProductoController {
 
     @Operation(summary = "Obtener producto por ID", description = "Retorna un producto específico por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto encontrado"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+            @ApiResponse(responseCode = "200", description = "Producto encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductoPorId(@PathVariable Long id) {
@@ -59,6 +61,10 @@ public class ProductoController {
     }
 
     @Operation(summary = "Buscar productos por categoría", description = "Retorna productos filtrados por categoría")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Productos encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "204", description = "No hay productos en esta categoría", content = @Content)
+    })
     @GetMapping("/categoria/{categoria}")
     public ResponseEntity<List<Producto>> getProductosPorCategoria(@PathVariable String categoria) {
         List<Producto> productos = productoService.obtenerPorCategoria(categoria);
@@ -66,6 +72,10 @@ public class ProductoController {
     }
 
     @Operation(summary = "Buscar productos por nombre", description = "Retorna productos que coincidan con el nombre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Productos encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "204", description = "No hay productos con ese nombre", content = @Content)
+    })
     @GetMapping("/buscar")
     public ResponseEntity<List<Producto>> buscarProductos(@RequestParam String nombre) {
         List<Producto> productos = productoService.buscarPorNombre(nombre);
@@ -74,8 +84,8 @@ public class ProductoController {
 
     @Operation(summary = "Crear producto", description = "Crea un nuevo producto")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "201", description = "Producto creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> crearProducto(@RequestBody Map<String, Object> datos) {
@@ -102,8 +112,9 @@ public class ProductoController {
 
     @Operation(summary = "Actualizar producto", description = "Actualiza un producto existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
@@ -141,6 +152,11 @@ public class ProductoController {
     }
 
     @Operation(summary = "Actualizar stock", description = "Actualiza el stock de un producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Stock actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
     @PutMapping("/{id}/stock")
     public ResponseEntity<?> actualizarStock(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
         try {

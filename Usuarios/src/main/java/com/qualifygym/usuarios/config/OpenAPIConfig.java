@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfig {
 @Bean
     public OpenAPI apiInfo() {
-        return new OpenAPI().info(new Info().title("Usuarios de GymFit web").version("1.0").description("Usuarios que se encuentras registrados en  en GymFit web"));
+        return new OpenAPI().info(new Info().title("Usuarios de GymFit web").version("1.0").description("Usuarios que se encuentras registrados en GymFit web"));
     }
 }
 
