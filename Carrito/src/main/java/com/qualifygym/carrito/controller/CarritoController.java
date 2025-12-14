@@ -19,6 +19,8 @@ import com.qualifygym.carrito.model.ItemCarrito;
 import com.qualifygym.carrito.service.CarritoService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +35,8 @@ public class CarritoController {
 
     @Operation(summary = "Obtener carrito por usuario", description = "Retorna todos los items del carrito de un usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Carrito obtenido exitosamente"),
-            @ApiResponse(responseCode = "204", description = "Carrito vacío")
+            @ApiResponse(responseCode = "200", description = "Carrito obtenido exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemCarrito.class))),
+            @ApiResponse(responseCode = "204", description = "Carrito vacío", content = @Content)
     })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<ItemCarrito>> getCarritoPorUsuario(@PathVariable Long usuarioId) {
@@ -44,8 +46,8 @@ public class CarritoController {
 
     @Operation(summary = "Agregar item al carrito", description = "Agrega un producto al carrito del usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Item agregado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "201", description = "Item agregado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemCarrito.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping("/agregar")
     public ResponseEntity<?> agregarItem(@RequestBody Map<String, Object> datos) {
@@ -66,8 +68,8 @@ public class CarritoController {
 
     @Operation(summary = "Actualizar cantidad de item", description = "Actualiza la cantidad de un item en el carrito")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cantidad actualizada exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Item no encontrado")
+            @ApiResponse(responseCode = "200", description = "Cantidad actualizada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemCarrito.class))),
+            @ApiResponse(responseCode = "404", description = "Item no encontrado", content = @Content)
     })
     @PutMapping("/item/{itemId}")
     public ResponseEntity<?> actualizarCantidad(@PathVariable Long itemId, @RequestBody Map<String, Object> datos) {
