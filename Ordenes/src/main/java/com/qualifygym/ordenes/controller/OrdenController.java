@@ -20,6 +20,8 @@ import com.qualifygym.ordenes.model.Orden;
 import com.qualifygym.ordenes.service.OrdenService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,8 +36,8 @@ public class OrdenController {
 
     @Operation(summary = "Obtener todas las órdenes", description = "Retorna una lista de todas las órdenes")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de órdenes obtenida exitosamente"),
-            @ApiResponse(responseCode = "204", description = "No hay órdenes")
+            @ApiResponse(responseCode = "200", description = "Lista de órdenes obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "204", description = "No hay órdenes", content = @Content)
     })
     @GetMapping
     public ResponseEntity<List<Orden>> getOrdenes() {
@@ -45,8 +47,8 @@ public class OrdenController {
 
     @Operation(summary = "Obtener orden por ID", description = "Retorna una orden específica por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Orden encontrada"),
-            @ApiResponse(responseCode = "404", description = "Orden no encontrada")
+            @ApiResponse(responseCode = "200", description = "Orden encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "404", description = "Orden no encontrada", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrdenPorId(@PathVariable Long id) {
@@ -59,6 +61,10 @@ public class OrdenController {
     }
 
     @Operation(summary = "Obtener órdenes por usuario", description = "Retorna todas las órdenes de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Órdenes obtenidas exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "204", description = "No hay órdenes para este usuario", content = @Content)
+    })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Orden>> getOrdenesPorUsuario(@PathVariable Long usuarioId) {
         List<Orden> ordenes = ordenService.obtenerPorUsuario(usuarioId);
@@ -66,6 +72,10 @@ public class OrdenController {
     }
 
     @Operation(summary = "Obtener órdenes por estado", description = "Retorna todas las órdenes con un estado específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Órdenes obtenidas exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "204", description = "No hay órdenes con este estado", content = @Content)
+    })
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Orden>> getOrdenesPorEstado(@PathVariable String estado) {
         List<Orden> ordenes = ordenService.obtenerPorEstado(estado);
@@ -73,6 +83,10 @@ public class OrdenController {
     }
 
     @Operation(summary = "Obtener items de una orden", description = "Retorna todos los items de una orden")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Items obtenidos exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemOrden.class))),
+            @ApiResponse(responseCode = "204", description = "No hay items para esta orden", content = @Content)
+    })
     @GetMapping("/{id}/items")
     public ResponseEntity<List<ItemOrden>> getItemsPorOrden(@PathVariable Long id) {
         List<ItemOrden> items = ordenService.obtenerItemsPorOrden(id);
@@ -81,8 +95,8 @@ public class OrdenController {
 
     @Operation(summary = "Crear orden", description = "Crea una nueva orden con sus items")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Orden creada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "201", description = "Orden creada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> crearOrden(@RequestBody Map<String, Object> datos) {
@@ -110,8 +124,8 @@ public class OrdenController {
 
     @Operation(summary = "Actualizar estado de orden", description = "Actualiza el estado de una orden")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Orden no encontrada")
+            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Orden.class))),
+            @ApiResponse(responseCode = "404", description = "Orden no encontrada", content = @Content),
     })
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
