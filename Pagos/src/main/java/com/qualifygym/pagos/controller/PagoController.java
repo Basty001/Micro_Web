@@ -98,14 +98,16 @@ public class PagoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<?> crearPago(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> crearPago(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para crear pago", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploPago", value = "{\"ordenId\": 10, \"usuarioId\": 1, \"monto\": 99.99, \"metodoPago\": \"Tarjeta\", \"informacionAdicional\": \"Visa terminada en 1234\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             Long ordenId = Long.valueOf(datos.get("ordenId").toString());
             Long usuarioId = Long.valueOf(datos.get("usuarioId").toString());
             Double monto = Double.valueOf(datos.get("monto").toString());
             String metodoPago = (String) datos.get("metodoPago");
-            String informacionAdicional = datos.get("informacionAdicional") != null ? 
-                    (String) datos.get("informacionAdicional") : null;
+            String informacionAdicional = datos.get("informacionAdicional") != null
+                    ? (String) datos.get("informacionAdicional")
+                    : null;
 
             if (ordenId == null || usuarioId == null || monto == null || metodoPago == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos"));
@@ -127,7 +129,8 @@ public class PagoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PutMapping("/{id}/estado")
-    public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarEstado(@PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Nuevo estado de pago", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploEstado", value = "{\"estado\": \"completado\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             String estado = (String) datos.get("estado");
             if (estado == null) {
@@ -158,4 +161,3 @@ public class PagoController {
         }
     }
 }
-

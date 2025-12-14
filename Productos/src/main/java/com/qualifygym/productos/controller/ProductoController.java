@@ -88,7 +88,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<?> crearProducto(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> crearProducto(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para crear producto", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploProducto", value = "{\"nombre\": \"Proteína Whey 2kg\", \"descripcion\": \"Proteína de suero sabor chocolate\", \"precio\": 89.99, \"categoria\": \"supplement\", \"stock\": 50, \"imagen\": \"https://example.com/whey.jpg\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             String nombre = (String) datos.get("nombre");
             String descripcion = (String) datos.get("descripcion");
@@ -117,7 +118,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarProducto(@PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos a actualizar del producto", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploActualizacion", value = "{\"precio\": 95.00, \"stock\": 45}"))) @RequestBody Map<String, Object> datos) {
         try {
             String nombre = datos.get("nombre") != null ? (String) datos.get("nombre") : null;
             String descripcion = datos.get("descripcion") != null ? (String) datos.get("descripcion") : null;
@@ -126,7 +128,8 @@ public class ProductoController {
             String imagen = datos.get("imagen") != null ? (String) datos.get("imagen") : null;
             Integer stock = datos.get("stock") != null ? Integer.valueOf(datos.get("stock").toString()) : null;
 
-            Producto producto = productoService.actualizarProducto(id, nombre, descripcion, precio, categoria, imagen, stock);
+            Producto producto = productoService.actualizarProducto(id, nombre, descripcion, precio, categoria, imagen,
+                    stock);
             return ResponseEntity.ok(producto);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
@@ -158,7 +161,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PutMapping("/{id}/stock")
-    public ResponseEntity<?> actualizarStock(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarStock(@PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cantidad de stock a sumar/restar o establecer", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploStock", value = "{\"cantidad\": 100}"))) @RequestBody Map<String, Object> datos) {
         try {
             Integer cantidad = Integer.valueOf(datos.get("cantidad").toString());
             productoService.actualizarStock(id, cantidad);
@@ -171,4 +175,3 @@ public class ProductoController {
         }
     }
 }
-

@@ -50,13 +50,14 @@ public class CarritoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping("/agregar")
-    public ResponseEntity<?> agregarItem(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> agregarItem(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del item a agregar", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploItem", value = "{\"usuarioId\": 1, \"productoId\": 5, \"cantidad\": 2, \"precioUnitario\": 49.99}"))) @RequestBody Map<String, Object> datos) {
         try {
             Long usuarioId = Long.valueOf(datos.get("usuarioId").toString());
             Long productoId = Long.valueOf(datos.get("productoId").toString());
             Integer cantidad = Integer.valueOf(datos.get("cantidad").toString());
             Double precioUnitario = Double.valueOf(datos.get("precioUnitario").toString());
-            
+
             ItemCarrito item = carritoService.agregarItem(usuarioId, productoId, cantidad, precioUnitario);
             return ResponseEntity.status(HttpStatus.CREATED).body(item);
         } catch (NumberFormatException e) {
@@ -72,7 +73,8 @@ public class CarritoController {
             @ApiResponse(responseCode = "404", description = "Item no encontrado", content = @Content)
     })
     @PutMapping("/item/{itemId}")
-    public ResponseEntity<?> actualizarCantidad(@PathVariable Long itemId, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarCantidad(@PathVariable Long itemId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Nueva cantidad", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploCantidad", value = "{\"cantidad\": 3}"))) @RequestBody Map<String, Object> datos) {
         try {
             Integer cantidad = Integer.valueOf(datos.get("cantidad").toString());
             ItemCarrito item = carritoService.actualizarCantidad(itemId, cantidad);

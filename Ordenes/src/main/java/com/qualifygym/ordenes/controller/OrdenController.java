@@ -99,12 +99,12 @@ public class OrdenController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<?> crearOrden(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> crearOrden(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para crear orden", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploOrden", value = "{\"usuarioId\": 1, \"total\": 99.99, \"direccionEnvio\": \"Calle 123\", \"notas\": \"Dejar en recepción\", \"items\": [{\"productoId\": 5, \"cantidad\": 1, \"precioUnitario\": 49.99}, {\"productoId\": 2, \"cantidad\": 1, \"precioUnitario\": 50.00}]}"))) @RequestBody Map<String, Object> datos) {
         try {
             Long usuarioId = Long.valueOf(datos.get("usuarioId").toString());
             Double total = Double.valueOf(datos.get("total").toString());
-            String direccionEnvio = datos.get("direccionEnvio") != null ? 
-                    (String) datos.get("direccionEnvio") : null;
+            String direccionEnvio = datos.get("direccionEnvio") != null ? (String) datos.get("direccionEnvio") : null;
             String notas = datos.get("notas") != null ? (String) datos.get("notas") : null;
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> items = (List<Map<String, Object>>) datos.get("items");
@@ -128,7 +128,8 @@ public class OrdenController {
             @ApiResponse(responseCode = "404", description = "Orden no encontrada", content = @Content),
     })
     @PutMapping("/{id}/estado")
-    public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarEstado(@PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Nuevo estado", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "EjemploEstado", value = "{\"estado\": \"procesando\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             String estado = (String) datos.get("estado");
             if (estado == null) {
@@ -159,4 +160,3 @@ public class OrdenController {
         }
     }
 }
-

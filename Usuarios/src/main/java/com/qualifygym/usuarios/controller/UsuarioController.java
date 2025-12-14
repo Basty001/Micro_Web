@@ -67,7 +67,7 @@ public class UsuarioController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
+                    .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -86,7 +86,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
+                    .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -96,8 +96,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos o faltantes", content = @Content),
             @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador", content = @Content)
     })
+    
     @PostMapping("/users")
-    public ResponseEntity<?> crearUsuario(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> crearUsuario(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del nuevo usuario", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "Ejemplo de Usuario", value = "{\"username\": \"juanperez\", \"password\": \"claveSegura123\", \"email\": \"juan@example.com\", \"phone\": \"1234567890\", \"rolId\": 2, \"address\": \"Calle Falsa 123\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             String username = (String) datos.get("username");
             String password = (String) datos.get("password");
@@ -105,11 +107,12 @@ public class UsuarioController {
             String phone = (String) datos.get("phone");
             Long rolId = datos.get("rolId") != null ? Long.valueOf(datos.get("rolId").toString()) : null;
             String address = datos.get("address") != null ? (String) datos.get("address") : null;
-            
+
             if (username == null || password == null || email == null || phone == null || rolId == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Faltan campos requeridos: username, password, email, phone, rolId"));
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Faltan campos requeridos: username, password, email, phone, rolId"));
             }
-            
+
             Usuario nuevo = usuarioService.crearUsuario(username, password, email, phone, rolId, address);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
         } catch (RuntimeException e) {
@@ -123,8 +126,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario no encontrado", content = @Content),
             @ApiResponse(responseCode = "401", description = "No autorizado - requiere rol Administrador", content = @Content)
     })
+    
     @PutMapping("/users/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos a actualizar", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "Ejemplo de Actualización", value = "{\"username\": \"juanperez_pro\", \"phone\": \"0987654321\"}"))) @RequestBody Map<String, Object> datos) {
         try {
             String username = (String) datos.get("username");
             String password = (String) datos.get("password");
@@ -132,8 +137,9 @@ public class UsuarioController {
             String phone = (String) datos.get("phone");
             Long rolId = datos.get("rolId") != null ? Long.valueOf(datos.get("rolId").toString()) : null;
             String address = datos.get("address") != null ? (String) datos.get("address") : null;
-            
-            Usuario actualizado = usuarioService.actualizarUsuario(id, username, password, email, phone, rolId, address);
+
+            Usuario actualizado = usuarioService.actualizarUsuario(id, username, password, email, phone, rolId,
+                    address);
             return ResponseEntity.ok(actualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -153,7 +159,7 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("error", "Error al eliminar usuario: " + e.getMessage()));
+                    .body(Map.of("error", "Error al eliminar usuario: " + e.getMessage()));
         }
     }
 
@@ -165,7 +171,15 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> datos) {
+    public ResponseEntity<?> login(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Credenciales para inicio de sesión", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "Ejemplo de Login", value = "{\"email\": \"usuario@example.com\", \"password\": \"password123\"}", summary = "Ejemplo de credenciales válidas"), schema = @Schema(implementation = Map.class) // Mantener
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // schema
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // genérico
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // pero
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // el
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // ejemplo
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             // manda
+            )) @RequestBody Map<String, String> datos) {
         try {
             String email = datos.get("email");
             String password = datos.get("password");
@@ -184,34 +198,32 @@ public class UsuarioController {
                 if (usuario != null) {
                     // Generar token JWT
                     String token = jwtService.generateToken(
-                        usuario.getUsername(),
-                        usuario.getId(),
-                        usuario.getRol().getNombre()
-                    );
-                    
+                            usuario.getUsername(),
+                            usuario.getId(),
+                            usuario.getRol().getNombre());
+
                     // Retornar token y datos del usuario
                     Map<String, Object> response = new HashMap<>();
                     response.put("token", token);
                     response.put("message", "Login exitoso");
                     response.put("usuario", Map.of(
-                        "id", usuario.getId(),
-                        "username", usuario.getUsername(),
-                        "email", usuario.getEmail(),
-                        "rol", usuario.getRol().getNombre()
-                    ));
+                            "id", usuario.getId(),
+                            "username", usuario.getUsername(),
+                            "email", usuario.getEmail(),
+                            "rol", usuario.getRol().getNombre()));
                     return ResponseEntity.ok(response);
                 } else {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of("error", "Error al obtener datos del usuario"));
+                            .body(Map.of("error", "Error al obtener datos del usuario"));
                 }
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Credenciales inválidas. Verifica tu email y contraseña."));
+                        .body(Map.of("error", "Credenciales inválidas. Verifica tu email y contraseña."));
             }
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
+                    .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -221,8 +233,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos, faltantes o duplicados (username/email ya existe)", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
+    
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> datos) {
+    public ResponseEntity<?> register(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos de registro público", required = true, content = @Content(mediaType = "application/json", examples = @io.swagger.v3.oas.annotations.media.ExampleObject(name = "Ejemplo de Registro", value = "{\"username\": \"nuevo_usuario\", \"password\": \"secreto123\", \"email\": \"nuevo@example.com\", \"phone\": \"1122334455\", \"address\": \"Av. Principal 456\"}"))) @RequestBody Map<String, String> datos) {
         try {
             String username = datos.get("username");
             String password = datos.get("password");
@@ -246,19 +260,18 @@ public class UsuarioController {
 
             // Crear el usuario con rol "Usuario" por defecto
             Usuario nuevo = usuarioService.registrarUsuarioPublico(
-                username.trim(), 
-                password, 
-                email.trim(), 
-                phone.trim(),
-                address != null ? address.trim() : null
-            );
-            
+                    username.trim(),
+                    password,
+                    email.trim(),
+                    phone.trim(),
+                    address != null ? address.trim() : null);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("error", "Error interno: " + e.getMessage()));
+                    .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
 
@@ -277,4 +290,3 @@ public class UsuarioController {
         }
     }
 }
-
