@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfig {
     @Bean
     public OpenAPI apiInfo() {
-        return new OpenAPI().info(new Info().title("Carrito QualifyGym").version("1.0").description("Microservicio de gestión de carrito de compras para QualifyGym"));
+        return new OpenAPI().info(new Info().title("Carrito GymFit web").version("1.0").description("Microservicio de gestión de carrito de compras para GymFit web"));
     }
 }
 

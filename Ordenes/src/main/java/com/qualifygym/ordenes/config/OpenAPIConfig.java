@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfig {
     @Bean
     public OpenAPI apiInfo() {
-        return new OpenAPI().info(new Info().title("Ordenes QualifyGym").version("1.0").description("Microservicio de gestión de órdenes para QualifyGym"));
+        return new OpenAPI().info(new Info().title("Ordenes GymFit web").version("1.0").description("Microservicio de gestión de órdenes para GymFit web"));
     }
 }
 
