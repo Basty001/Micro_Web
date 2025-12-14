@@ -19,6 +19,8 @@ import com.qualifygym.pagos.model.Pago;
 import com.qualifygym.pagos.service.PagoService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +35,8 @@ public class PagoController {
 
     @Operation(summary = "Obtener todos los pagos", description = "Retorna una lista de todos los pagos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida exitosamente"),
-            @ApiResponse(responseCode = "204", description = "No hay pagos")
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "204", description = "No hay pagos", content = @Content)
     })
     @GetMapping
     public ResponseEntity<List<Pago>> getPagos() {
@@ -44,8 +46,8 @@ public class PagoController {
 
     @Operation(summary = "Obtener pago por ID", description = "Retorna un pago específico por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pago encontrado"),
-            @ApiResponse(responseCode = "404", description = "Pago no encontrado")
+            @ApiResponse(responseCode = "200", description = "Pago encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getPagoPorId(@PathVariable Long id) {
@@ -58,6 +60,10 @@ public class PagoController {
     }
 
     @Operation(summary = "Obtener pagos por usuario", description = "Retorna todos los pagos de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "204", description = "No hay pagos para el usuario", content = @Content)
+    })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Pago>> getPagosPorUsuario(@PathVariable Long usuarioId) {
         List<Pago> pagos = pagoService.obtenerPorUsuario(usuarioId);
@@ -65,6 +71,10 @@ public class PagoController {
     }
 
     @Operation(summary = "Obtener pagos por orden", description = "Retorna todos los pagos de una orden")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "204", description = "No hay pagos para la orden", content = @Content)
+    })
     @GetMapping("/orden/{ordenId}")
     public ResponseEntity<List<Pago>> getPagosPorOrden(@PathVariable Long ordenId) {
         List<Pago> pagos = pagoService.obtenerPorOrden(ordenId);
@@ -72,6 +82,10 @@ public class PagoController {
     }
 
     @Operation(summary = "Obtener pagos por estado", description = "Retorna todos los pagos con un estado específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "204", description = "No hay pagos con el estado especificado", content = @Content)
+    })
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Pago>> getPagosPorEstado(@PathVariable String estado) {
         List<Pago> pagos = pagoService.obtenerPorEstado(estado);
@@ -80,8 +94,8 @@ public class PagoController {
 
     @Operation(summary = "Crear pago", description = "Crea un nuevo pago")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Pago creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "201", description = "Pago creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PostMapping
     public ResponseEntity<?> crearPago(@RequestBody Map<String, Object> datos) {
@@ -108,8 +122,9 @@ public class PagoController {
 
     @Operation(summary = "Actualizar estado de pago", description = "Actualiza el estado de un pago")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Pago no encontrado")
+            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestBody Map<String, Object> datos) {
